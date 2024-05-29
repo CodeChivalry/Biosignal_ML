@@ -1,13 +1,13 @@
 from pylsl import StreamInlet, resolve_stream
-print("Looking for an EMG stream...")
-streams = resolve_stream('type', 'myo')
+print("Looking for an shimmer stream...")
+streams = resolve_stream('type', 'shimmer')
 
 
 
 
 inlet = StreamInlet(streams[0])
 
-print("Receiving EMG data... Press Ctrl+C to stop.")
+print("Receiving shimmer data... Press Ctrl+C to stop.")
 
 try:
     while True:

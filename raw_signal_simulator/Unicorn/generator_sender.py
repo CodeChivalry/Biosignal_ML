@@ -16,14 +16,14 @@ def generate_emg_signal(t):
     return noise + muscle_activity
 
 # Create a new stream info (name, type, number of channels, sampling rate, data format, source id)
-info = StreamInfo('myo', 'myo', num_channels, sampling_rate, 'float32', 'myuid34234')
+info = StreamInfo('unicorn', 'unicorn', num_channels, sampling_rate, 'float32', 'myuid34234')
 
 # Create an outlet to stream the data
 outlet = StreamOutlet(info)
 
 # Main loop to simulate real-time data acquisition
 try:
-    print("Streaming EMG data... Press Ctrl+C to stop.")
+    print("Streaming unicorn data... Press Ctrl+C to stop.")
     while True:
         # Generate new signals for each channel
         emg_signals = np.array([generate_emg_signal(t) for _ in range(num_channels)])
