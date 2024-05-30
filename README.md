@@ -10,4 +10,4 @@ contains model training code
 Contains codes simulating biosignals generation and streaming over network using lsl
 Myo
 Shimmer
-Unicorn
+-Unicorn
