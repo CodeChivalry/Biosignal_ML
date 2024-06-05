@@ -1,33 +1,31 @@
-import numpy as np
 import pandas as pd
-import neurokit2 as nk
+import numpy as np
 import time
 from pylsl import StreamInfo, StreamOutlet
 
-def generate_synthetic_emg(duration, sampling_rate, noise, burst_number, burst_duration, random_state=None):
-    return nk.emg_simulate(duration=duration, 
-                           sampling_rate=sampling_rate, 
-                           noise=noise, 
-                           burst_number=burst_number, 
-                           burst_duration=burst_duration, 
-                           random_state=random_state)
 # Parameters
-duration = 10  # seconds
 sampling_rate = 250  # Hz
-noise = 0.1
-burst_number = 3
-burst_duration = [0.5, 1, 0.75]  # Different durations for each burst
-num_electrodes = 8  # Number of electrodes (channels)
+duration = 10  # seconds
+num_samples = sampling_rate * duration
 
-# Generate EMG signals for each electrode
-electrode_columns = [f'Electrode {i+1}' for i in range(num_electrodes)]
-emg_data = {col: generate_synthetic_emg(duration, sampling_rate, noise, burst_number, burst_duration, random_state=i) for i, col in enumerate(electrode_columns)}
+# Generate synthetic EMG signal
+def generate_emg_signal(t):
+    noise = np.random.normal(0, 0.1, len(t))
+    muscle_activity = np.sin(2 * np.pi * 10 * t) * (np.random.rand(len(t)) > 0.98)
+    return noise + muscle_activity
 
-# Convert to DataFrame
-emg_df = pd.DataFrame(emg_data)
+# Time vector for the duration of the signal
+t = np.linspace(0, duration, num_samples)
+
+# Columns for synthetic data
+electrode_columns = ['Electrode 1', 'Electrode 2', 'Electrode 3', 'Electrode 4', 
+                     'Electrode 5', 'Electrode 6', 'Electrode 7', 'Electrode 8']
+
+# Generate synthetic data for each electrode
+electrode_data = pd.DataFrame({col: generate_emg_signal(t) for col in electrode_columns})
 
 # Get the number of channels from the data
-num_channels = emg_df.shape[1]
+num_channels = electrode_data.shape[1]
 
 # Create a new stream info (name, type, number of channels, sampling rate, data format, source id)
 info = StreamInfo('myo', 'EMG', num_channels, sampling_rate, 'float32', 'myuid34234')
@@ -38,14 +36,15 @@ outlet = StreamOutlet(info)
 # Main loop to simulate real-time data acquisition
 try:
     print("Streaming synthetic EMG data... Press Ctrl+C to stop.")
-     
     while True:
         # Stream the data via LSL
-        for i in range(0, len(emg_df), sampling_rate):
-            chunk = emg_df.iloc[i:i+sampling_rate].values  # Get a chunk of data
-            for sample in chunk:
-                outlet.push_sample(sample.tolist())  # Push the sample to the LSL outlet
-        
+        for i in range(0, len(electrode_data), sampling_rate):
+            chunk = electrode_data.iloc[i:i+sampling_rate]  # Get a chunk of data
+            for index, row in chunk.iterrows():
+                sample = row.values.tolist()  # Convert the row to a list of values
+                sample_dict_list = [{col: row[col]} for col in electrode_columns] # List of dictionaries for logging 
+                outlet.push_sample(sample)  # Push the sample to the LSL outlet
+                timestamp = time.time()
         # Wait for one second to simulate real-time sampling rate
         time.sleep(1)
 except KeyboardInterrupt:
