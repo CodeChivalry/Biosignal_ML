@@ -16,7 +16,7 @@ def generate_emg_signal(t):
     return noise + muscle_activity
 
 # Create a new stream info (name, type, number of channels, sampling rate, data format, source id)
-info = StreamInfo('myo', 'myo', num_channels, sampling_rate, 'float32', 'myuid34234')
+info = StreamInfo('marker', 'marker', num_channels, sampling_rate, 'float32', 'myuid34234')
 
 # Create an outlet to stream the data
 outlet = StreamOutlet(info)

@@ -1,6 +1,6 @@
 from pylsl import StreamInlet, resolve_stream
 print("Looking for an unicorn stream...")
-streams = resolve_stream('type', 'unicorn')
+streams = resolve_stream('name', 'Unicorn')
 
 
 

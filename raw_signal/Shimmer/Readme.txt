@@ -1,0 +1,1 @@
+To stream shimmer data through lsl, I use https://github.com/prasanthsasikumar/ECL-Shimmer-C-API 
