@@ -8,6 +8,6 @@ contains model training code
 
 # raw_signal_simulator
 Contains codes simulating biosignals generation and streaming over network using lsl
--Myo
--Shimmer
+Myo
+Shimmer
 -Unicorn
