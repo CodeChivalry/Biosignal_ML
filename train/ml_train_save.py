@@ -10,11 +10,12 @@ from sklearn.metrics import accuracy_score
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from Common import PublicData, pd_CSVHandler
-
+from datetime import datetime, timezone
 # Define a queue for each device data stream
 shimmer_queue = queue.Queue()
 unicorn_queue = queue.Queue()
 myo_queue = queue.Queue()
+marker_queue = queue.Queue()
 
 
 # Data processing function
@@ -25,7 +26,7 @@ def process_data(device_queue, device_name, participant_id, condition_id):
     data_folder = f"{PublicData.base_dir}/{participant_id}"
     os.makedirs(data_folder, exist_ok=True)
     filename = f'{data_folder}/{device_name}_{participant_id}_{condition_id}_{time.strftime("%Y-%m-%d_%H-%M-%S")}.csv'
-    pd_data_saver = pd_CSVHandler.DataSaver(filename, columns=PublicData.get_header(device_name))
+    pd_data_saver = pd_CSVHandler.DataSaver(filename, columns=PublicData.header_maps[device_name])
 
     while True:
         data = device_queue.get()
@@ -36,38 +37,41 @@ def process_data(device_queue, device_name, participant_id, condition_id):
         data_buffer.append([timestamp] + sample)
         
         if len(data_buffer) >= PublicData.NUM_SAMPLES:  # Process every 1000 samples
-            # df = pd.DataFrame(data_buffer, columns=['timestamp'] + [f'channel_{i}' for i in range(len(sample))])
             pd_data_saver.save_to_csv(data_buffer)
-            
+            print(f'saved {device_name} data')
             # # Extract features and train the model (example)
             # features = extract_features(data_buffer)
             # # Train the model with the extracted features (example)
             # if len(labels) >= len(data_buffer):
             #     model = train_model(features, labels)
             
-            # data_buffer = []
+            data_buffer = [] # donot comment this out, otherwise the memory will drain out
 
 # Data reception function for each device
-def receive_data(device_type, device_queue):
-    print(f"Looking for a {device_type} stream...")
-    streams = resolve_stream('name', device_type)
+def receive_data(lsl_name, device_queue):
+    print(f"Looking for a {lsl_name} stream...")
+    streams = resolve_stream('name', lsl_name)
     inlet = StreamInlet(streams[0])
     
     while True:
         sample, timestamp = inlet.pull_sample()
-        device_queue.put([timestamp] + sample)
+        current_utc_time = datetime.now(timezone.utc)
+        current_utc_epoch_time = current_utc_time.timestamp()
+        device_queue.put([timestamp,current_utc_epoch_time] + sample)
 
 # Create threads for data reception
 shimmer_thread = threading.Thread(target=receive_data, args=('ECL', shimmer_queue))
 unicorn_thread = threading.Thread(target=receive_data, args=('Unicorn', unicorn_queue))
 myo_thread = threading.Thread(target=receive_data, args=('myo', myo_queue))
+marker_thread = threading.Thread(target=receive_data, args=('marker', marker_queue))
 
 # Create threads for data processing
-participant_id = "P001"  # Example participant ID
+participant_id = "P002"  # Example participant ID
 condition_id = "C001"    # Example condition ID
-shimmer_processing_thread = threading.Thread(target=process_data, args=(shimmer_queue, PublicData.DevicesEnum.Shimmer.value, participant_id, condition_id))
-unicorn_processing_thread = threading.Thread(target=process_data, args=(unicorn_queue, PublicData.DevicesEnum.Unicorn.value, participant_id, condition_id))
-myo_processing_thread = threading.Thread(target=process_data, args=(myo_queue, PublicData.DevicesEnum.Myo.value, participant_id, condition_id))
+shimmer_processing_thread = threading.Thread(target=process_data, args=(shimmer_queue, PublicData.DevicesEnum.shimmer.name, participant_id, condition_id))
+unicorn_processing_thread = threading.Thread(target=process_data, args=(unicorn_queue, PublicData.DevicesEnum.unicorn.name, participant_id, condition_id))
+myo_processing_thread = threading.Thread(target=process_data, args=(myo_queue, PublicData.DevicesEnum.myo.name, participant_id, condition_id))
+marker_processing_thread = threading.Thread(target=process_data, args=(marker_queue, PublicData.DevicesEnum.marker.name, participant_id, condition_id))
 
 # Start the threads
 shimmer_thread.start()

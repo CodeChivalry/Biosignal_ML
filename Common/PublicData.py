@@ -1,29 +1,30 @@
-from enum import Enum
+from enum import Enum, auto
 
-class DevicesEnum(str, Enum):
-    Shimmer = "shimmer"
-    Unicorn = "unicorn"
-    Myo = "myo"
+class DevicesEnum(Enum):
+    shimmer = auto()
+    unicorn = auto()
+    myo = auto()
+    marker = auto()
 
 base_dir = 'Dataset'
-shimmer_header = ['Timestamp_lsl','Timestamp_inlet','TimeStampRaw', 'TimeStampCAL(ms)','SystemTimeStamp(ms)','InternalADC_A13','InternalADC_A13(mv)','GSR','GSR(Kohms)','GSR conductance(uSiemens)','HeartRatePPG(beats/min)','IBIPPG(ms)']
 
-unicorn_header = ['Timestamp_lsl', "FZ", "C3", "CZ", "C4", "PZ", "PO7", "OZ", "PO8",
-        "AccX","AccY", "AccZ", "Gyro1", "Gyro2","Gyro3","Battery", "Counter","Validation"]
+header_maps = {
+    DevicesEnum.shimmer.name: ['Timestamp_outlet','Timestamp_inlet','TimeStampRaw', 'TimeStampCAL(ms)','SystemTimeStamp(ms)','InternalADC_A13','InternalADC_A13(mv)','GSR','GSR(Kohms)','GSR conductance(uSiemens)','HeartRatePPG(beats/min)','IBIPPG(ms)'],
 
-myo_header = ['Timestamp_lsl','Ch1','Ch2','Ch3','Ch4','Ch5','Ch6','Ch7','Ch8']
+    DevicesEnum.unicorn.name: ['Timestamp_outlet','Timestamp_inlet', "FZ", "C3", "CZ", "C4", "PZ", "PO7", "OZ", "PO8",
+        "AccX","AccY", "AccZ", "Gyro1", "Gyro2","Gyro3","Battery", "Counter","Validation"],
+    
+    DevicesEnum.myo.name: ['Timestamp_outlet','Timestamp_inlet','Ch1','Ch2','Ch3','Ch4','Ch5','Ch6','Ch7','Ch8'],
+
+    DevicesEnum.marker.name: ['Timestamp_outlet','Timestamp_inlet','Marker']
+
+    # add more when there is new devices streaming data and need to save to csv
+
+}
+
 
 NUM_SAMPLES = 1000
 
-def get_header(device_name):
-    if device_name == DevicesEnum.Shimmer.value:
-        return shimmer_header
-    elif device_name ==  DevicesEnum.Unicorn.value:
-        return unicorn_header
-    elif device_name ==  DevicesEnum.Myo.value:
-        return myo_header
-    else:
-        return ""
 
 
 

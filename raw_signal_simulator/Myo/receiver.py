@@ -1,6 +1,6 @@
 from pylsl import StreamInlet, resolve_stream
 print("Looking for an EMG stream...")
-streams = resolve_stream('type', 'myo')
+streams = resolve_stream('name', 'ECL')
 
 
 
