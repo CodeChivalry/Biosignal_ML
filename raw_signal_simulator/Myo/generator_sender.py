@@ -18,8 +18,7 @@ def generate_emg_signal(t):
 t = np.linspace(0, duration, num_samples)
 
 # Columns for synthetic data
-electrode_columns = ['Electrode 1', 'Electrode 2', 'Electrode 3', 'Electrode 4', 
-                     'Electrode 5', 'Electrode 6', 'Electrode 7', 'Electrode 8']
+electrode_columns = ['Timestamp_outlet','Timestamp_inlet','Ch1','Ch2','Ch3','Ch4','Ch5','Ch6','Ch7','Ch8']
 
 # Generate synthetic data for each electrode
 electrode_data = pd.DataFrame({col: generate_emg_signal(t) for col in electrode_columns})
