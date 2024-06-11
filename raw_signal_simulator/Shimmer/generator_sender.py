@@ -18,8 +18,7 @@ def generate_emg_signal(t):
 t = np.linspace(0, duration, num_samples)
 
 # Columns for synthetic data
-columns = ['InternalADC_A13', 'InternalADC_A13(mv)', 'GSR', 'GSR(Kohms)', 
-                    'GSR conductance(uSiemens)', 'HeartRatePPG(beats/min)', 'IBIPPG(ms)']
+columns = ['Timestamp_outlet','Timestamp_inlet','TimeStampRaw', 'TimeStampCAL(ms)','SystemTimeStamp(ms)','InternalADC_A13','InternalADC_A13(mv)','GSR','GSR(Kohms)','GSR conductance(uSiemens)','HeartRatePPG(beats/min)','IBIPPG(ms)']
 # Generate synthetic data for each electrode
 shimmer_data = pd.DataFrame({col: generate_emg_signal(t) for col in columns})
 
