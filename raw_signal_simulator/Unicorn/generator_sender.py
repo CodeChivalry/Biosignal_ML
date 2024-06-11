@@ -18,9 +18,8 @@ def generate_emg_signal(t):
 t = np.linspace(0, duration, num_samples)
 
 # Columns for synthetic data
-columns = ['FZ', 'C3', 'CZ', 'C4', 'PZ', 'PO7', 'OZ', 'PO8', 
-                    'AccX', 'AccY', 'AccZ', 'Gyro1', 'Gyro2', 'Gyro3',
-                    'Battery', 'Counter', 'Validation']
+columns = ['Timestamp_outlet','Timestamp_inlet', "FZ", "C3", "CZ", "C4", "PZ", "PO7", "OZ", "PO8",
+        "AccX","AccY", "AccZ", "Gyro1", "Gyro2","Gyro3","Battery", "Counter","Validation"]
 
 # Generate synthetic data for each electrode
 unicorn_data = pd.DataFrame({col: generate_emg_signal(t) for col in columns})
