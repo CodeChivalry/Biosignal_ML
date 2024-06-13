@@ -1,9 +1,7 @@
 from pylsl import StreamInlet, resolve_stream
-print("Looking for an shimmer stream...")
-streams = resolve_stream('type', 'shimmer')
 
-
-
+print("Looking for shimmer stream...")
+streams = resolve_stream('type', 'PPGEDA')
 
 inlet = StreamInlet(streams[0])
 
