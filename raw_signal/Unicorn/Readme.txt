@@ -1,0 +1,1 @@
+To stream the Unicorn data through lsl, I used the official unicorn lsl app

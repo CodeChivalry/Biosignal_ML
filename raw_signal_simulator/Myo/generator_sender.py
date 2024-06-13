@@ -27,7 +27,9 @@ electrode_data = pd.DataFrame({col: generate_emg_signal(t) for col in electrode_
 num_channels = electrode_data.shape[1]
 
 # Create a new stream info (name, type, number of channels, sampling rate, data format, source id)
+
 info = StreamInfo('myo', 'EMG', num_channels, sampling_rate, 'float32', 'myuid34234')
+
 
 # Create an outlet to stream the data
 outlet = StreamOutlet(info)
