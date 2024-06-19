@@ -19,10 +19,23 @@ header_maps = {
     DevicesEnum.marker.name: ['Timestamp_outlet','Timestamp_inlet','Marker']
 
     # add more when there is new devices streaming data and need to save to csv
-
 }
 
+biosignal_maps = {
+    DevicesEnum.shimmer.name: ['eda', 'ppg'],
 
+    DevicesEnum.unicorn.name: ['eeg'],
+    
+    DevicesEnum.myo.name: ['emg'],
+}
+
+# this will be automratically filled by the feature extraction functions
+biosignal_feature_maps = {
+    biosignal_maps[DevicesEnum.shimmer.name][0]: [], # eda features
+    biosignal_maps[DevicesEnum.shimmer.name][1]: [], # ppg features
+    biosignal_maps[DevicesEnum.unicorn.name][0]: [], # eeg features
+    biosignal_maps[DevicesEnum.myo.name][0]: [], # emg features
+}
 NUM_SAMPLES = 1000
 
 
