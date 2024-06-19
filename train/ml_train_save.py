@@ -60,8 +60,8 @@ def receive_data(lsl_name, device_queue):
         device_queue.put([timestamp,current_utc_epoch_time] + sample)
 
 # Create threads for data reception
-shimmer_thread = threading.Thread(target=receive_data, args=('ECL', shimmer_queue))
-unicorn_thread = threading.Thread(target=receive_data, args=('Unicorn', unicorn_queue))
+shimmer_thread = threading.Thread(target=receive_data, args=('shimmer', shimmer_queue))
+unicorn_thread = threading.Thread(target=receive_data, args=('unicorn', unicorn_queue))
 myo_thread = threading.Thread(target=receive_data, args=('myo', myo_queue))
 marker_thread = threading.Thread(target=receive_data, args=('marker', marker_queue))
 

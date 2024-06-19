@@ -5,7 +5,7 @@ import time
 
 def receive_shimmer_data():
     print("Looking for a Shimmer stream...")
-    streams = resolve_stream('name', 'ECL')
+    streams = resolve_stream('name', 'PPGEDA')
     inlet = StreamInlet(streams[0])
     
     shimmer_data = []
@@ -20,7 +20,7 @@ def receive_shimmer_data():
 
 def receive_unicorn_data():
     print("Looking for a Unicorn EEG stream...")
-    streams = resolve_stream('name', 'Unicorn')
+    streams = resolve_stream('name', 'EEG')
     inlet = StreamInlet(streams[0])
     
     unicorn_data = []
@@ -35,7 +35,7 @@ def receive_unicorn_data():
 
 def receive_myo_data():
     print("Looking for a Myo EMG stream...")
-    streams = resolve_stream('name', 'myo')
+    streams = resolve_stream('name', 'EMG')
     inlet = StreamInlet(streams[0])
     
     myo_data = []

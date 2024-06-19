@@ -18,7 +18,7 @@ def generate_emg_signal(t):
 t = np.linspace(0, duration, num_samples)
 
 # Columns for synthetic data
-columns = ['Timestamp_outlet','Timestamp_inlet','TimeStampRaw', 'TimeStampCAL(ms)','SystemTimeStamp(ms)','InternalADC_A13','InternalADC_A13(mv)','GSR','GSR(Kohms)','GSR conductance(uSiemens)','HeartRatePPG(beats/min)','IBIPPG(ms)']
+columns = ['TimeStampRaw', 'TimeStampCAL(ms)','SystemTimeStamp(ms)','InternalADC_A13','InternalADC_A13(mv)','GSR','GSR(Kohms)','GSR conductance(uSiemens)','HeartRatePPG(beats/min)','IBIPPG(ms)']
 # Generate synthetic data for each electrode
 shimmer_data = pd.DataFrame({col: generate_emg_signal(t) for col in columns})
 
@@ -43,6 +43,7 @@ try:
                 sample_dict_list = [{col: row[col]} for col in columns] # List of dictionaries for logging 
                 outlet.push_sample(sample)  # Push the sample to the LSL outlet
                 timestamp = time.time()
+                print(f"Timestamp: {timestamp}, Sample: {sample_dict_list}")
         # Wait for one second to simulate real-time sampling rate
         time.sleep(1)
 except KeyboardInterrupt:
