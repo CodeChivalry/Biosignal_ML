@@ -17,9 +17,12 @@ unicorn_queue = queue.Queue()
 myo_queue = queue.Queue()
 marker_queue = queue.Queue()
 
+# Global flag to control thread execution
+stop_threads = False
 
 # Data processing function
 def process_data(device_queue, device_name, participant_id, condition_id):
+    global stop_threads
     data_buffer = []
     labels = []  # Placeholder for labels, adjust as necessary
     
@@ -28,10 +31,13 @@ def process_data(device_queue, device_name, participant_id, condition_id):
     filename = f'{data_folder}/{device_name}_{participant_id}_{condition_id}_{time.strftime("%Y-%m-%d_%H-%M-%S")}.csv'
     pd_data_saver = pd_CSVHandler.DataSaver(filename, columns=PublicData.header_maps[device_name])
 
-    while True:
+    while not stop_threads:
+        
+        if stop_threads:
+            break
         data = device_queue.get()
         if data is None:
-            break
+            continue
         
         timestamp, sample = data[0], data[1:]
         data_buffer.append([timestamp] + sample)
@@ -49,11 +55,14 @@ def process_data(device_queue, device_name, participant_id, condition_id):
 
 # Data reception function for each device
 def receive_data(lsl_name, device_queue):
+    global stop_threads
     print(f"Looking for a {lsl_name} stream...")
     streams = resolve_stream('name', lsl_name)
     inlet = StreamInlet(streams[0])
     
-    while True:
+    while not stop_threads:
+        if stop_threads:
+            break
         sample, timestamp = inlet.pull_sample()
         current_utc_time = datetime.now(timezone.utc)
         current_utc_epoch_time = current_utc_time.timestamp()
@@ -73,18 +82,23 @@ unicorn_processing_thread = threading.Thread(target=process_data, args=(unicorn_
 myo_processing_thread = threading.Thread(target=process_data, args=(myo_queue, PublicData.DevicesEnum.myo.name, participant_id, condition_id))
 marker_processing_thread = threading.Thread(target=process_data, args=(marker_queue, PublicData.DevicesEnum.marker.name, participant_id, condition_id))
 
-# Start the threads
-shimmer_thread.start()
-unicorn_thread.start()
-myo_thread.start()
-shimmer_processing_thread.start()
-unicorn_processing_thread.start()
-myo_processing_thread.start()
-
-# Join the threads to the main thread
-shimmer_thread.join()
-unicorn_thread.join()
-myo_thread.join()
-shimmer_processing_thread.join()
-unicorn_processing_thread.join()
-myo_processing_thread.join()
+try:
+    # Start the threads
+    shimmer_thread.start()
+    unicorn_thread.start()
+    myo_thread.start()
+    shimmer_processing_thread.start()
+    unicorn_processing_thread.start()
+    myo_processing_thread.start()
+    while True:
+        time.sleep(0.1) # main thread will sleep for 0.1 seconds waiting for keyboard interrupt
+except KeyboardInterrupt:
+    print("Detected keyboard interrupt. Shutting down...")
+    stop_threads = True
+    # Join the threads to the main thread
+    shimmer_thread.join()
+    unicorn_thread.join()
+    myo_thread.join()
+    shimmer_processing_thread.join()
+    unicorn_processing_thread.join()
+    myo_processing_thread.join()

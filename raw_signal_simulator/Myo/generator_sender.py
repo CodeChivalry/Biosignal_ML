@@ -35,18 +35,20 @@ info = StreamInfo('myo', 'EMG', num_channels, sampling_rate, 'float32', 'myuid34
 outlet = StreamOutlet(info)
 
 # Main loop to simulate real-time data acquisition
-try:
-    print("Streaming synthetic EMG data... Press Ctrl+C to stop.")
-    while True:
-        # Stream the data via LSL
-        for i in range(0, len(electrode_data), sampling_rate):
-            chunk = electrode_data.iloc[i:i+sampling_rate]  # Get a chunk of data
-            for index, row in chunk.iterrows():
-                sample = row.values.tolist()  # Convert the row to a list of values
-                sample_dict_list = [{col: row[col]} for col in electrode_columns] # List of dictionaries for logging 
-                outlet.push_sample(sample)  # Push the sample to the LSL outlet
-                timestamp = time.time()
-        # Wait for one second to simulate real-time sampling rate
-        time.sleep(1)
-except KeyboardInterrupt:
-    print("Simulation stopped by user.")
+if __name__ == "__main__":
+    try:
+        print("Streaming synthetic EMG data... Press Ctrl+C to stop.")
+        while True:
+            # Stream the data via LSL
+            for i in range(0, len(electrode_data), sampling_rate):
+                chunk = electrode_data.iloc[i:i+sampling_rate]  # Get a chunk of data
+                for index, row in chunk.iterrows():
+                    sample = row.values.tolist()  # Convert the row to a list of values
+                    sample_dict_list = [{col: row[col]} for col in electrode_columns] # List of dictionaries for logging 
+                    outlet.push_sample(sample)  # Push the sample to the LSL outlet
+                    timestamp = time.time()
+            # Wait for one second to simulate real-time sampling rate
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("Simulation stopped by user.")
+

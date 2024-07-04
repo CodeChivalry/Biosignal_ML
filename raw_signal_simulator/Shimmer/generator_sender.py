@@ -32,19 +32,20 @@ info = StreamInfo('shimmer', 'PPGEDA', num_channels, sampling_rate, 'float32', '
 outlet = StreamOutlet(info)
 
 # Main loop to simulate real-time data acquisition
-try:
-    print("Streaming synthetic shimmer data... Press Ctrl+C to stop.")
-    while True:
-        # Stream the data via LSL
-        for i in range(0, len(shimmer_data), sampling_rate):
-            chunk = shimmer_data.iloc[i:i+sampling_rate]  # Get a chunk of data
-            for index, row in chunk.iterrows():
-                sample = row.values.tolist()  # Convert the row to a list of values
-                sample_dict_list = [{col: row[col]} for col in columns] # List of dictionaries for logging 
-                outlet.push_sample(sample)  # Push the sample to the LSL outlet
-                timestamp = time.time()
-                print(f"Timestamp: {timestamp}, Sample: {sample_dict_list}")
-        # Wait for one second to simulate real-time sampling rate
-        time.sleep(1)
-except KeyboardInterrupt:
-    print("Simulation stopped by user.")
+if __name__ == "__main__":
+    try:
+        print("Streaming synthetic shimmer data... Press Ctrl+C to stop.")
+        while True:
+            # Stream the data via LSL
+            for i in range(0, len(shimmer_data), sampling_rate):
+                chunk = shimmer_data.iloc[i:i+sampling_rate]  # Get a chunk of data
+                for index, row in chunk.iterrows():
+                    sample = row.values.tolist()  # Convert the row to a list of values
+                    sample_dict_list = [{col: row[col]} for col in columns] # List of dictionaries for logging 
+                    outlet.push_sample(sample)  # Push the sample to the LSL outlet
+                    timestamp = time.time()
+                    print(f"Timestamp: {timestamp}, Sample: {sample_dict_list}")
+            # Wait for one second to simulate real-time sampling rate
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("Simulation stopped by user.")
