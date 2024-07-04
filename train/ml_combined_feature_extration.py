@@ -17,7 +17,7 @@ from FeatureHandler.EMG.EMGFeatureExtractor import EMGFeaturesExtractor
 
 
 # Path to the dataset folder
-dataset_path = '../Dataset'
+dataset_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'Dataset'))
 
 # Placeholder for combined features and labels
 combined_features = []
@@ -40,18 +40,29 @@ ppg_feature_extractor = PPGFeaturesExtractor()
 for participant_id in os.listdir(dataset_path):
     participant_folder = os.path.join(dataset_path, participant_id)
     if os.path.isdir(participant_folder):
+        # tbd: extract markers first 
+        # then read data and trunk the data using markers
+        # how to label the data?
         # Assuming file naming convention and condition, adjust as necessary
         for file in os.listdir(participant_folder):
-            if file.startswith(participant_id) and ('shimmer' in file or 'emg' in file or 'eeg' in file):
-                # Read the CSV file
-                data_path = os.path.join(participant_folder, file)
-                data = pd.read_csv(data_path)
-                
-                # Preprocess the data (e.g., feature extraction)
-                # This is a placeholder, replace with actual preprocessing
-                features = data.mean().values  # Example: using mean as a feature
-                
-                combined_features.append(features)
-                # Extract label from file name or content
-                label = extract_label(file)  # Implement this function based on your naming convention
-                labels.append(label)
+            data_path = os.path.join(participant_folder, file)
+            data = pd.read_csv(data_path)
+            # if file starts with shimmer, do shimmer feature extraction
+            if file.startswith('shimmer'):
+                # do shimmer feature extraction
+                shimmer_eda_features = eda_feature_extractor.extract_features(data)
+                shimmer_ppg_features = ppg_feature_extractor.extract_features(data)
+                combined_features.append(shimmer_eda_features)
+                combined_features.append(shimmer_ppg_features)
+            elif file.startswith('myo'):
+                # do myo feature extraction
+                emg_features = emg_feature_extractor.extract_features(data)
+                combined_features.append(emg_features)
+            elif file.startswith('unicorn'):
+                # do unicorn feature extraction
+                eeg_features = eeg_feature_extractor.extract_features(data)
+                combined_features.append(eeg_features)
+            # Extract label from file name or content
+                # label = extract_label(file)  # Implement this function based on your naming convention
+                # labels.append(label)
+            
