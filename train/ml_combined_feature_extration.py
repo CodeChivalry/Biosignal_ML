@@ -9,7 +9,7 @@ from sklearn.metrics import accuracy_score
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from Common.PublicData import NUM_SAMPLES
+from Common.PublicData import NUM_SAMPLES, biosignal_feature_maps
 from FeatureHandler.EDA.EDAFeatureExtractor import EDAFeaturesExtractor 
 from FeatureHandler.PPG.PPGFeatureExtractor import PPGFeaturesExtractor 
 from FeatureHandler.EEG.EEGFeatureExtractor import EEGFeaturesExtractor 
@@ -56,10 +56,10 @@ for participant_id in os.listdir(dataset_path):
                 shimmer_ppg_features = ppg_feature_extractor.extract_features(data)
                 combined_features.append(shimmer_eda_features)
                 combined_features.append(shimmer_ppg_features)
-            elif file.startswith('myo'):
+            # elif file.startswith('myo'):
                 # do myo feature extraction
-                emg_features = emg_feature_extractor.extract_features(data)
-                combined_features.append(emg_features)
+                # emg_features = emg_feature_extractor.extract_features(data)
+                # combined_features.append(emg_features)
             elif file.startswith('unicorn'):
                 # do unicorn feature extraction
                 eeg_features = eeg_feature_extractor.extract_features(data)

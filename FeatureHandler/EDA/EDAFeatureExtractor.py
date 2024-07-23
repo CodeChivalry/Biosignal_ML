@@ -2,10 +2,10 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from Common.FeatureExtractorBase import FeaturesExtractorBase
-from Common.PublicData import biosignal_feature_maps, biosignal_maps, DevicesEnum
+from Common.PublicData import biosignal_feature_maps, biosignal_maps, DevicesEnum, shimmer_sample_rate
 import numpy as np
 from biosppy.signals import eda as biosppy_eda
-
+import neurokit2 as nk
 class EDAFeaturesExtractor(FeaturesExtractorBase):
 
     def preprocess(self, data):
@@ -13,16 +13,16 @@ class EDAFeaturesExtractor(FeaturesExtractorBase):
         preprocessed_data = data['GSR']  # Use 'GSR' column for EDA
         return preprocessed_data
 
-    def register_features(self, feature_names):
-        for feature in feature_names:
+    def register_features(self, feature_df):
+        for feature in feature_df:
             biosignal_feature_maps[biosignal_maps[DevicesEnum.shimmer.name][0]].append(feature)
 
     def extract_all_features(self, data):
-        eda_results = biosppy_eda.eda(signal=data, sampling_rate=1000.0, show=False)
-        eda_features = [np.mean(eda_results.amplitudes), np.std(eda_results.amplitudes)]
-        
-        names = ['EDA_Mean_Amplitude', 'EDA_Std_Amplitude']
-        self.register_features(names)
+        # eda_results = biosppy_eda.eda(signal=data, sampling_rate=shimmer_sample_rate, show=False, min_amplitude=0.01)
+        # eda_features = [np.mean(eda_results.amplitudes), np.std(eda_results.amplitudes)]
+        x_f = nk.signal_filter(data, sampling_rate=shimmer_sample_rate, highcut=3, method="butterworth", order=4)
+        eda_features = nk.eda_process(x_f,shimmer_sample_rate)
+        self.register_features(eda_features)
         
         return eda_features
 
