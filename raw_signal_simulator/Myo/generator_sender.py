@@ -2,9 +2,13 @@ import pandas as pd
 import numpy as np
 import time
 from pylsl import StreamInfo, StreamOutlet
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
+from Common.PublicData import myo_sample_rate
 # Parameters
-sampling_rate = 250  # Hz
+sampling_rate = myo_sample_rate  # Hz
 duration = 10  # seconds
 num_samples = sampling_rate * duration
 
@@ -47,6 +51,7 @@ if __name__ == "__main__":
                     sample_dict_list = [{col: row[col]} for col in electrode_columns] # List of dictionaries for logging 
                     outlet.push_sample(sample)  # Push the sample to the LSL outlet
                     timestamp = time.time()
+                    print(f"Timestamp: {timestamp}, Sample: {sample_dict_list}")
             # Wait for one second to simulate real-time sampling rate
             time.sleep(1)
     except KeyboardInterrupt:

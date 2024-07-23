@@ -2,9 +2,12 @@ import pandas as pd
 import numpy as np
 import time
 from pylsl import StreamInfo, StreamOutlet
-
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+from Common.PublicData import shimmer_sample_rate
 # Parameters
-sampling_rate = 250  # Hz
+sampling_rate = shimmer_sample_rate  # Hz
 duration = 10  # seconds
 num_samples = sampling_rate * duration
 

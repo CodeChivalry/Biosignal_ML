@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from Common.FeatureExtractorBase import FeaturesExtractorBase
-from Common.PublicData import biosignal_feature_maps, biosignal_maps, DevicesEnum
+from Common.PublicData import biosignal_feature_maps, biosignal_maps, DevicesEnum, myo_sample_rate
 
 import numpy as np
 from biosppy.signals import emg as biosppy_emg
@@ -22,7 +22,7 @@ class EMGFeaturesExtractor(FeaturesExtractorBase):
         emg_features = []
         names = []
         for i, signal in enumerate(data):
-            results = biosppy_emg.emg(signal=signal, sampling_rate=1000.0, show=False)
+            results = biosppy_emg.emg(signal=signal, sampling_rate=myo_sample_rate, show=False)
             features = [np.mean(results.filtered), np.std(results.filtered), len(results.onsets)]
             emg_features.extend(features)
             names.extend([f'EMG_Ch{i+1}_Mean_Filtered', f'EMG_Ch{i+1}_Std_Filtered', f'EMG_Ch{i+1}_Onsets'])

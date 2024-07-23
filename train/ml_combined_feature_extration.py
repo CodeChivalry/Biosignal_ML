@@ -43,6 +43,8 @@ for participant_id in os.listdir(dataset_path):
         # tbd: extract markers first 
         # then read data and trunk the data using markers
         # how to label the data?
+        # preprocess
+
         # Assuming file naming convention and condition, adjust as necessary
         for file in os.listdir(participant_folder):
             data_path = os.path.join(participant_folder, file)
@@ -65,4 +67,5 @@ for participant_id in os.listdir(dataset_path):
             # Extract label from file name or content
                 # label = extract_label(file)  # Implement this function based on your naming convention
                 # labels.append(label)
+            # save the combined features to csv
             

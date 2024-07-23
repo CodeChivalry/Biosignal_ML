@@ -2,7 +2,7 @@ from pylsl import StreamInlet, resolve_stream
 
 
 print("Looking for a unicorn stream...")
-streams = resolve_stream('type', 'EEG')
+streams = resolve_stream('type', 'Messages')
 
 inlet = StreamInlet(streams[0])
 

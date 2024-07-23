@@ -39,5 +39,7 @@ biosignal_feature_maps = {
 NUM_SAMPLES = 1000
 
 
-
+shimmer_sample_rate = 256
+unicorn_sample_rate = 250
+myo_sample_rate = 200
 
