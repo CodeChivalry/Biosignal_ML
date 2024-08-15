@@ -53,13 +53,13 @@ for participant_id in os.listdir(dataset_path):
             if file.startswith('shimmer'):
                 # do shimmer feature extraction
                 shimmer_eda_features = eda_feature_extractor.extract_features(data)
-                shimmer_ppg_features = ppg_feature_extractor.extract_features(data)
-                combined_features.append(shimmer_eda_features)
-                combined_features.append(shimmer_ppg_features)
-            # elif file.startswith('myo'):
+                # shimmer_ppg_features = ppg_feature_extractor.extract_features(data)
+                # combined_features.append(shimmer_eda_features)
+                # combined_features.append(shimmer_ppg_features)
+            elif file.startswith('myo'):
                 # do myo feature extraction
-                # emg_features = emg_feature_extractor.extract_features(data)
-                # combined_features.append(emg_features)
+                emg_features = emg_feature_extractor.extract_features(data)
+                combined_features.append(emg_features)
             elif file.startswith('unicorn'):
                 # do unicorn feature extraction
                 eeg_features = eeg_feature_extractor.extract_features(data)

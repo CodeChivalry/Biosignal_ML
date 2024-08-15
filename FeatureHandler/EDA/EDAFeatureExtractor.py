@@ -6,6 +6,7 @@ from Common.PublicData import biosignal_feature_maps, biosignal_maps, DevicesEnu
 import numpy as np
 from biosppy.signals import eda as biosppy_eda
 import neurokit2 as nk
+import pandas
 class EDAFeaturesExtractor(FeaturesExtractorBase):
 
     def preprocess(self, data):
@@ -13,7 +14,7 @@ class EDAFeaturesExtractor(FeaturesExtractorBase):
         preprocessed_data = data['GSR']  # Use 'GSR' column for EDA
         return preprocessed_data
 
-    def register_features(self, feature_df):
+    def register_features(self, feature_df:pandas.DataFrame):
         for feature in feature_df:
             biosignal_feature_maps[biosignal_maps[DevicesEnum.shimmer.name][0]].append(feature)
 
