@@ -1,12 +1,13 @@
 from enum import Enum, auto
-
+import pandas as pd
+import os
 class DevicesEnum(Enum):
     shimmer = auto()
     unicorn = auto()
     myo = auto()
     marker = auto()
 
-base_dir = 'Dataset'
+base_dir = os.path.join(os.path.dirname(__file__), '..', 'Dataset')
 
 header_maps = {
     DevicesEnum.shimmer.name: ['Timestamp_outlet','Timestamp_inlet','TimeStampRaw', 'TimeStampCAL(ms)','SystemTimeStamp(ms)','InternalADC_A13','InternalADC_A13(mv)','GSR','GSR(Kohms)','GSR conductance(uSiemens)','HeartRatePPG(beats/min)','IBIPPG(ms)'],
@@ -29,7 +30,7 @@ biosignal_maps = {
     DevicesEnum.myo.name: ['emg'],
 }
 
-# this will be automratically filled by the feature extraction functions
+# this will be automatically filled by the feature extraction functions
 biosignal_feature_maps = {
     biosignal_maps[DevicesEnum.shimmer.name][0]: [], # eda features
     biosignal_maps[DevicesEnum.shimmer.name][1]: [], # ppg features
@@ -37,8 +38,6 @@ biosignal_feature_maps = {
     biosignal_maps[DevicesEnum.myo.name][0]: [], # emg features
 }
 NUM_SAMPLES = 1000
-
-
 shimmer_sample_rate = 256
 unicorn_sample_rate = 250
 myo_sample_rate = 200

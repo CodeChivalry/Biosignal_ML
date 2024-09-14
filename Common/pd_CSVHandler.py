@@ -1,12 +1,13 @@
-# data_saver.py
-
+# CSVHandler.py
 import pandas as pd
 import os
 
 class DataSaver:
     def __init__(self, filename, columns=None):
-        self.filename = os.path.join(os.getcwd(), filename)
-        self.columns = columns or ['Timestamp', 'name','value']  # Default columns
+        # Update to ensure the path points to the Dataset directory
+        dataset_dir = os.path.join(os.path.dirname(__file__), '..', 'Dataset')
+        self.filename = os.path.join(dataset_dir, filename)
+        self.columns = columns or ['Timestamp', 'name', 'value']  # Default columns
         self._initialize_csv()
 
     def _initialize_csv(self):
@@ -24,3 +25,13 @@ class DataSaver:
         """
         df = pd.DataFrame(data, columns=self.columns)
         df.to_csv(self.filename, mode='a', header=False, index=False)
+
+    def load_csv(self):
+        """
+        Load data from the CSV file.
+        """
+        if os.path.exists(self.filename):
+            return pd.read_csv(self.filename)
+        else:
+            print(f"No file found at {self.filename}")
+            return None
